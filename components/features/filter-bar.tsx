@@ -1,55 +1,44 @@
 'use client'
 
-import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+
+export interface FilterState {
+  search: string
+  providers: string[]
+  architectures: string[]
+  tags: string[]
+}
 
 interface FilterBarProps {
   providers: string[]
   architectures: string[]
   tags: string[]
-  onFilterChange: (filters: {
-    search: string
-    providers: string[]
-    architectures: string[]
-    tags: string[]
-  }) => void
+  filters: FilterState
+  onFiltersChange: (filters: FilterState) => void
 }
 
-export function FilterBar({ providers, architectures, tags, onFilterChange }: FilterBarProps) {
-  const [search, setSearch] = useState('')
-  const [selectedProviders, setSelectedProviders] = useState<string[]>([])
-  const [selectedArchitectures, setSelectedArchitectures] = useState<string[]>([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-
+export function FilterBar({
+  providers,
+  architectures,
+  tags,
+  filters,
+  onFiltersChange,
+}: FilterBarProps) {
   const toggleFilter = (
     value: string,
     current: string[],
-    setter: React.Dispatch<React.SetStateAction<string[]>>
+    key: keyof Omit<FilterState, 'search'>
   ) => {
     const newFilters = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value]
-    setter(newFilters)
-    notifyChange(search, newFilters, selectedArchitectures, selectedTags)
-  }
-
-  const notifyChange = (searchValue: string, provs: string[], archs: string[], tgs: string[]) => {
-    onFilterChange({
-      search: searchValue,
-      providers: provs,
-      architectures: archs,
-      tags: tgs,
-    })
+    onFiltersChange({ ...filters, [key]: newFilters })
   }
 
   const clearFilters = () => {
-    setSearch('')
-    setSelectedProviders([])
-    setSelectedArchitectures([])
-    setSelectedTags([])
-    onFilterChange({
+    onFiltersChange({
       search: '',
       providers: [],
       architectures: [],
@@ -58,20 +47,19 @@ export function FilterBar({ providers, architectures, tags, onFilterChange }: Fi
   }
 
   const hasFilters =
-    search ||
-    selectedProviders.length > 0 ||
-    selectedArchitectures.length > 0 ||
-    selectedTags.length > 0
+    filters.search ||
+    filters.providers.length > 0 ||
+    filters.architectures.length > 0 ||
+    filters.tags.length > 0
 
   return (
     <div className="space-y-4">
       <div className="flex gap-4 items-center">
         <Input
           placeholder="Search models..."
-          value={search}
+          value={filters.search}
           onChange={(e) => {
-            setSearch(e.target.value)
-            notifyChange(e.target.value, selectedProviders, selectedArchitectures, selectedTags)
+            onFiltersChange({ ...filters, search: e.target.value })
           }}
           className="max-w-xs"
         />
@@ -88,9 +76,9 @@ export function FilterBar({ providers, architectures, tags, onFilterChange }: Fi
           {providers.map((provider) => (
             <Badge
               key={provider}
-              variant={selectedProviders.includes(provider) ? 'default' : 'outline'}
+              variant={filters.providers.includes(provider) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
-              onClick={() => toggleFilter(provider, selectedProviders, setSelectedProviders)}
+              onClick={() => toggleFilter(provider, filters.providers, 'providers')}
             >
               {provider}
             </Badge>
@@ -102,9 +90,9 @@ export function FilterBar({ providers, architectures, tags, onFilterChange }: Fi
           {architectures.map((arch) => (
             <Badge
               key={arch}
-              variant={selectedArchitectures.includes(arch) ? 'default' : 'outline'}
+              variant={filters.architectures.includes(arch) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
-              onClick={() => toggleFilter(arch, selectedArchitectures, setSelectedArchitectures)}
+              onClick={() => toggleFilter(arch, filters.architectures, 'architectures')}
             >
               {arch}
             </Badge>
@@ -116,9 +104,9 @@ export function FilterBar({ providers, architectures, tags, onFilterChange }: Fi
           {tags.map((tag) => (
             <Badge
               key={tag}
-              variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+              variant={filters.tags.includes(tag) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
-              onClick={() => toggleFilter(tag, selectedTags, setSelectedTags)}
+              onClick={() => toggleFilter(tag, filters.tags, 'tags')}
             >
               {tag}
             </Badge>

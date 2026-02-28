@@ -27,16 +27,42 @@ interface MetricsChartProps {
 type ChartType = 'bar' | 'radar'
 type ScoreMode = 'raw' | 'normalized'
 
+// Chart colors from Tailwind theme
+const CHART_COLORS = [
+  'oklch(41.703% 0.099 251.473)', // primary (blue)
+  'oklch(64.092% 0.027 229.389)', // secondary
+  'oklch(67.271% 0.167 35.791)', // accent (orange)
+  'oklch(70.226% 0.094 156.596)', // success (green)
+  'oklch(62.616% 0.143 240.033)', // info
+  'oklch(77.482% 0.115 81.519)', // warning (yellow)
+]
+
+// Chart styling constants
+const CHART_STYLES = {
+  gridStroke: 'oklch(0.38778 0.032 261.325)',
+  axisStroke: 'oklch(0.71319 0.015 286.325)',
+  tooltip: {
+    backgroundColor: 'oklch(0.27807 0.027 261.325)',
+    border: '1px solid oklch(0.38778 0.032 261.325)',
+    borderRadius: '0.25rem',
+    color: 'oklch(0.987 0.015 286.325)',
+  },
+  legend: {
+    color: 'oklch(0.71319 0.015 286.325)',
+  },
+}
+
+// Score normalization max values
+const SCORE_MAX: Record<string, number> = {
+  arena: 100,
+  artificialAnalysis: 100,
+  liveCodeBench: 100,
+  swebench: 1,
+}
+
 // Normalize scores to 0-100 scale based on typical max values
 function normalizeScore(score: number, source: string): number {
-  const maxScores: Record<string, number> = {
-    arena: 100,
-    artificialAnalysis: 100,
-    liveCodeBench: 100,
-    swebench: 1, // Already 0-1 scale
-  }
-
-  const max = maxScores[source] ?? 100
+  const max = SCORE_MAX[source] ?? 100
   return source === 'swebench' ? score * 100 : (score / max) * 100
 }
 
@@ -74,15 +100,6 @@ function buildChartData(models: Model[], scores: Record<string, BenchmarkScores>
 
   return { arenaData, liveCodeData }
 }
-
-const COLORS = [
-  'oklch(41.703% 0.099 251.473)', // primary (blue)
-  'oklch(64.092% 0.027 229.389)', // secondary
-  'oklch(67.271% 0.167 35.791)', // accent (orange)
-  'oklch(70.226% 0.094 156.596)', // success (green)
-  'oklch(62.616% 0.143 240.033)', // info
-  'oklch(77.482% 0.115 81.519)', // warning (yellow)
-]
 
 export function MetricsChart({ models, scores }: MetricsChartProps) {
   const [chartType, setChartType] = useState<ChartType>('bar')
@@ -174,45 +191,35 @@ export function MetricsChart({ models, scores }: MetricsChartProps) {
                     tick={{ fill: 'oklch(0.71319 0.015 286.325)' }}
                   />
                   <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'oklch(0.27807 0.027 261.325)',
-                      border: '1px solid oklch(0.38778 0.032 261.325)',
-                      borderRadius: '0.25rem',
-                      color: 'oklch(0.987 0.015 286.325)',
-                    }}
-                    labelStyle={{ color: 'oklch(0.987 0.015 286.325)' }}
+                    contentStyle={CHART_STYLES.tooltip}
+                    labelStyle={{ color: CHART_STYLES.tooltip.color }}
                   />
-                  <Legend wrapperStyle={{ color: 'oklch(0.71319 0.015 286.325)' }} />
+                  <Legend wrapperStyle={{ color: CHART_STYLES.legend.color }} />
                   {Object.keys(data[0] ?? {})
                     .filter((key) => key !== 'name')
                     .map((key, index) => (
                       <Bar
                         key={key}
                         dataKey={key}
-                        fill={COLORS[index % COLORS.length]}
+                        fill={CHART_COLORS[index % CHART_COLORS.length]}
                         radius={[4, 4, 0, 0]}
                       />
                     ))}
                 </BarChart>
               ) : (
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                  <PolarGrid stroke="oklch(0.38778 0.032 261.325)" />
-                  <PolarAngleAxis dataKey="name" tick={{ fill: 'oklch(0.71319 0.015 286.325)' }} />
+                  <PolarGrid stroke={CHART_STYLES.gridStroke} />
+                  <PolarAngleAxis dataKey="name" tick={{ fill: CHART_STYLES.axisStroke }} />
                   <PolarRadiusAxis
                     angle={90}
                     domain={[0, 'auto']}
-                    tick={{ fill: 'oklch(0.71319 0.015 286.325)' }}
+                    tick={{ fill: CHART_STYLES.axisStroke }}
                   />
                   <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'oklch(0.27807 0.027 261.325)',
-                      border: '1px solid oklch(0.38778 0.032 261.325)',
-                      borderRadius: '0.25rem',
-                      color: 'oklch(0.987 0.015 286.325)',
-                    }}
-                    labelStyle={{ color: 'oklch(0.987 0.015 286.325)' }}
+                    contentStyle={CHART_STYLES.tooltip}
+                    labelStyle={{ color: CHART_STYLES.tooltip.color }}
                   />
-                  <Legend wrapperStyle={{ color: 'oklch(0.71319 0.015 286.325)' }} />
+                  <Legend wrapperStyle={{ color: CHART_STYLES.legend.color }} />
                   {Object.keys(data[0] ?? {})
                     .filter((key) => key !== 'name')
                     .map((key, index) => (
@@ -220,8 +227,8 @@ export function MetricsChart({ models, scores }: MetricsChartProps) {
                         key={key}
                         name={key}
                         dataKey={key}
-                        stroke={COLORS[index % COLORS.length]}
-                        fill={COLORS[index % COLORS.length]}
+                        stroke={CHART_COLORS[index % CHART_COLORS.length]}
+                        fill={CHART_COLORS[index % CHART_COLORS.length]}
                         fillOpacity={0.3}
                       />
                     ))}

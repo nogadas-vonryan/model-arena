@@ -3,6 +3,7 @@
 import { Model, BenchmarkScores } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+import { MAX_MODEL_SELECTION } from '@/lib/constants'
 
 interface ModelComparisonTableProps {
   models: Array<{ model: Model; scores: BenchmarkScores }>
@@ -18,7 +19,7 @@ export function ModelComparisonTable({
   const toggleModel = (modelId: string) => {
     const newSelected = selectedModelIds.includes(modelId)
       ? selectedModelIds.filter((id) => id !== modelId)
-      : selectedModelIds.length < 4
+      : selectedModelIds.length < MAX_MODEL_SELECTION
         ? [...selectedModelIds, modelId]
         : selectedModelIds
 
@@ -30,8 +31,12 @@ export function ModelComparisonTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Select up to 4 models to compare:</span>
-        <Badge variant="outline">{selectedModelIds.length}/4 selected</Badge>
+        <span className="text-sm text-muted-foreground">
+          Select up to {MAX_MODEL_SELECTION} models to compare:
+        </span>
+        <Badge variant="outline">
+          {selectedModelIds.length}/{MAX_MODEL_SELECTION} selected
+        </Badge>
       </div>
 
       <div className="overflow-x-auto">

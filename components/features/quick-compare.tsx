@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { Model, BenchmarkScores } from '@/types'
 import { Card } from '@/components/ui'
 import { ChevronDown, X, Plus, Trash2 } from 'lucide-react'
+import { MAX_MODEL_SELECTION, MIN_COMPARISON_SLOTS } from '@/lib/constants'
 
 interface QuickCompareProps {
   models: Array<{ model: Model; scores: BenchmarkScores }>
@@ -272,10 +273,10 @@ export function QuickCompare({
   models,
   selectedModelIds,
   onSelectionChange,
-  maxSelection = 4,
+  maxSelection = MAX_MODEL_SELECTION,
 }: QuickCompareProps) {
   // Track number of slots (min 2, max maxSelection)
-  const [slotCount, setSlotCount] = useState(2)
+  const [slotCount, setSlotCount] = useState(MIN_COMPARISON_SLOTS)
 
   const handleModelSelect = useCallback(
     (position: number, modelId: string | null) => {
