@@ -1,188 +1,97 @@
 {
-  "lastUpdated": "2024-08-01",
-  "source": "LiveCodeBench",
+  "lastUpdated": "2026-02-26",
+  "source": "LiveCodeBench & SWE-bench",
+  "citations": [
+    "https://livecodebench.github.io/leaderboard.html",
+    "https://www.swebench.com",
+    "https://openai.com/index/swe-bench-verified-update/"
+  ],
   "liveCodeBench": [
     {
-      "model": "gpt-4o",
-      "passAt1": 76.2,
-      "passAt5": 89.5,
-      "passAt10": 92.1
+      "model": "gemini-3-1-pro",
+      "elo": 2887,
+      "passAt1": 89.2,
+      "passAt5": 94.5,
+      "passAt10": 96.8
     },
     {
-      "model": "gpt-4o-mini",
-      "passAt1": 62.8,
-      "passAt5": 78.4,
-      "passAt10": 84.2
+      "model": "gpt-5-2",
+      "elo": 2393,
+      "passAt1": 82.5,
+      "passAt5": 91.2,
+      "passAt10": 93.5
     },
     {
-      "model": "gpt-4-turbo",
-      "passAt1": 72.5,
-      "passAt5": 85.3,
-      "passAt10": 89.7
+      "model": "claude-4-6-opus",
+      "elo": 2350,
+      "passAt1": 81.8,
+      "passAt5": 90.5,
+      "passAt10": 92.8
     },
     {
-      "model": "claude-3.5-sonnet",
-      "passAt1": 74.8,
-      "passAt5": 87.2,
+      "model": "qwen-3-5-397b",
+      "score": 83.6,
+      "passAt1": 78.4,
+      "passAt5": 88.2,
       "passAt10": 90.5
     },
     {
-      "model": "claude-3.5-haiku",
-      "passAt1": 58.3,
-      "passAt5": 72.1,
-      "passAt10": 78.9
+      "model": "glm-4-7",
+      "score": 84.9,
+      "passAt1": 79.5,
+      "passAt5": 89.1,
+      "passAt10": 91.2
     },
     {
-      "model": "claude-3-opus",
-      "passAt1": 70.2,
-      "passAt5": 83.5,
-      "passAt10": 87.8
-    },
-    {
-      "model": "gemini-1.5-pro",
-      "passAt1": 65.4,
-      "passAt5": 79.8,
-      "passAt10": 85.2
-    },
-    {
-      "model": "gemini-1.5-flash",
-      "passAt1": 58.7,
-      "passAt5": 73.2,
-      "passAt10": 79.5
-    },
-    {
-      "model": "llama-3.1-405b",
-      "passAt1": 48.2,
-      "passAt5": 62.5,
-      "passAt10": 69.8
-    },
-    {
-      "model": "llama-3.1-70b",
-      "passAt1": 45.8,
-      "passAt5": 59.2,
-      "passAt10": 65.4
-    },
-    {
-      "model": "mistral-large-2",
-      "passAt1": 68.5,
-      "passAt5": 81.2,
-      "passAt10": 86.5
-    },
-    {
-      "model": "deepseek-v3",
-      "passAt1": 63.2,
-      "passAt5": 77.5,
-      "passAt10": 82.8
-    },
-    {
-      "model": "deepseek-coder-v2",
-      "passAt1": 72.1,
-      "passAt5": 84.6,
-      "passAt10": 88.9
-    },
-    {
-      "model": "grok-2",
-      "passAt1": 52.3,
-      "passAt5": 67.8,
-      "passAt10": 74.2
-    },
-    {
-      "model": "claude-3-sonnet",
-      "passAt1": 68.9,
-      "passAt5": 82.1,
-      "passAt10": 86.7
+      "model": "gpt-5-3-codex",
+      "score": 77.3,
+      "passAt1": 77.3,
+      "passAt5": 85.8,
+      "passAt10": 88.2
     }
   ],
   "swebench": [
     {
-      "model": "gpt-4o",
-      "score": 54.7,
+      "model": "claude-sonnet-5",
+      "score": 82.1,
       "testsTotal": 500,
-      "testsPassed": 273
+      "testsPassed": 411
     },
     {
-      "model": "gpt-4o-mini",
-      "score": 42.3,
+      "model": "claude-4-6-opus",
+      "score": 80.8,
       "testsTotal": 500,
-      "testsPassed": 211
+      "testsPassed": 404
     },
     {
-      "model": "gpt-4-turbo",
-      "score": 51.2,
+      "model": "minimax-m2-5",
+      "score": 80.2,
       "testsTotal": 500,
-      "testsPassed": 256
+      "testsPassed": 401
     },
     {
-      "model": "claude-3.5-sonnet",
-      "score": 58.9,
+      "model": "glm-5",
+      "score": 77.8,
       "testsTotal": 500,
-      "testsPassed": 294
+      "testsPassed": 389
     },
     {
-      "model": "claude-3.5-haiku",
-      "score": 38.5,
+      "model": "gpt-5-2-pro",
+      "score": 72.8,
       "testsTotal": 500,
-      "testsPassed": 192
+      "testsPassed": 364
     },
     {
-      "model": "claude-3-opus",
-      "score": 52.8,
+      "model": "gemini-3-pro",
+      "score": 69.6,
       "testsTotal": 500,
-      "testsPassed": 264
+      "testsPassed": 348
     },
     {
-      "model": "gemini-1.5-pro",
-      "score": 45.6,
+      "model": "grok-4-2",
+      "score": 68.0,
       "testsTotal": 500,
-      "testsPassed": 228
-    },
-    {
-      "model": "gemini-1.5-flash",
-      "score": 35.2,
-      "testsTotal": 500,
-      "testsPassed": 176
-    },
-    {
-      "model": "llama-3.1-405b",
-      "score": 28.4,
-      "testsTotal": 500,
-      "testsPassed": 142
-    },
-    {
-      "model": "llama-3.1-70b",
-      "score": 24.8,
-      "testsTotal": 500,
-      "testsPassed": 124
-    },
-    {
-      "model": "mistral-large-2",
-      "score": 48.3,
-      "testsTotal": 500,
-      "testsPassed": 241
-    },
-    {
-      "model": "deepseek-v3",
-      "score": 46.5,
-      "testsTotal": 500,
-      "testsPassed": 232
-    },
-    {
-      "model": "deepseek-coder-v2",
-      "score": 62.1,
-      "testsTotal": 500,
-      "testsPassed": 310
-    },
-    {
-      "model": "grok-2",
-      "score": 35.8,
-      "testsTotal": 500,
-      "testsPassed": 179
-    },
-    {
-      "model": "claude-3-sonnet",
-      "score": 55.2,
-      "testsTotal": 500,
-      "testsPassed": 276
+      "testsPassed": 340
     }
   ]
 }

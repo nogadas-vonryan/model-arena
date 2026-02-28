@@ -10,17 +10,6 @@ interface DataFreshnessTagProps {
 export function DataFreshnessTag({ lastUpdated, className }: DataFreshnessTagProps) {
   const relativeTime = formatDateRelative(lastUpdated)
 
-  const getVariant = () => {
-    const date = new Date(lastUpdated)
-    const now = new Date()
-    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-
-    if (diffDays <= 1) return 'success'
-    if (diffDays <= 7) return 'info'
-    if (diffDays <= 30) return 'warning'
-    return 'destructive'
-  }
-
   return (
     <div
       className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
