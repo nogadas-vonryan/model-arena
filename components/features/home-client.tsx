@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useQueryState, parseAsString } from 'nuqs'
 import { Model, BenchmarkScores } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle, DataFreshnessTag } from '@/components/ui'
@@ -10,8 +10,11 @@ import {
   ModelComparisonTable,
   MetricsChart,
   QuickCompare,
+  GranularErrorBoundary,
 } from '@/components/features'
+import type { FilterState } from '@/components/features/filter-bar'
 import { Trophy, BarChart3, Code, Brain } from 'lucide-react'
+import { SOURCE_INFO, MAX_MODEL_SELECTION } from '@/lib/constants'
 
 interface Source {
   id: string
@@ -26,34 +29,20 @@ interface HomeClientProps {
   sources: Source[]
 }
 
-const SOURCE_INFO: Record<
-  string,
-  { name: string; description: string; icon: React.ElementType; url: string }
-> = {
-  arena: {
-    name: 'Chatbot Arena',
-    description: 'Crowdsourced LLM battles (ELO)',
-    icon: Trophy,
-    url: 'https://lmarena.ai',
-  },
-  aa: {
-    name: 'ArtificialAnalysis',
-    description: 'Quality, speed & intelligence scores',
-    icon: BarChart3,
-    url: 'https://artificialanalysis.ai',
-  },
-  livecode: {
-    name: 'LiveCodeBench',
-    description: 'Code generation benchmark',
-    icon: Code,
-    url: 'https://livecodebench.github.io',
-  },
-  swebench: {
-    name: 'SWE-bench',
-    description: 'Real-world software engineering tasks',
-    icon: Brain,
-    url: 'https://www.swebench.com',
-  },
+const SOURCE_ICONS: Record<string, React.ElementType> = {
+  arena: Trophy,
+  aa: BarChart3,
+  livecode: Code,
+  swebench: Brain,
+}
+
+// Parser for comma-separated string to string array
+const parseCommaSeparated = {
+  parse: (value: string): string[] => value.split(',').filter(Boolean),
+  serialize: (values: string[]): string => values.join(','),
+  clearOnDefault: true,
+  history: 'push' as const,
+  defaultValue: [],
 }
 
 export function HomeClient({
@@ -63,28 +52,56 @@ export function HomeClient({
   tags,
   sources,
 }: HomeClientProps) {
-  const [filters, setFilters] = useState({
-    search: '',
-    providers: [] as string[],
-    architectures: [] as string[],
-    tags: [] as string[],
-  })
+  // Filter state persisted to URL
+  const [search, setSearch] = useQueryState(
+    'search',
+    parseAsString.withOptions({ clearOnDefault: true }).withDefault('')
+  )
+  const [selectedProviders, setSelectedProviders] = useQueryState('providers', parseCommaSeparated)
+  const [selectedArchitectures, setSelectedArchitectures] = useQueryState(
+    'architectures',
+    parseCommaSeparated
+  )
+  const [selectedTags, setSelectedTags] = useQueryState('tags', parseCommaSeparated)
 
+  const filters: FilterState = useMemo(
+    () => ({
+      search,
+      providers: selectedProviders,
+      architectures: selectedArchitectures,
+      tags: selectedTags,
+    }),
+    [search, selectedProviders, selectedArchitectures, selectedTags]
+  )
+
+  const handleFiltersChange = useCallback(
+    (newFilters: FilterState) => {
+      setSearch(newFilters.search || null)
+      setSelectedProviders(newFilters.providers.length > 0 ? newFilters.providers : null)
+      setSelectedArchitectures(
+        newFilters.architectures.length > 0 ? newFilters.architectures : null
+      )
+      setSelectedTags(newFilters.tags.length > 0 ? newFilters.tags : null)
+    },
+    [setSearch, setSelectedProviders, setSelectedArchitectures, setSelectedTags]
+  )
+
+  // Model selection state persisted to URL
   const [selectedModelIdsRaw, setSelectedModelIdsRaw] = useQueryState(
     'modelIds',
     parseAsString.withOptions({ clearOnDefault: true })
   )
 
   // Parse model IDs from URL
-  const urlModelIds = (selectedModelIdsRaw || '').split(',').filter(Boolean).slice(0, 4)
-
-  // For the UI, we always show at least 2 slots, plus any selected models
+  const urlModelIds = (selectedModelIdsRaw || '')
+    .split(',')
+    .filter(Boolean)
+    .slice(0, MAX_MODEL_SELECTION)
   const selectedModelIds = urlModelIds
 
   const handleSelectedModelsChange = (ids: string[]) => {
-    // Filter out empty strings and save to URL
-    const nonEmptyIds = ids.filter(Boolean).slice(0, 4)
-    setSelectedModelIdsRaw(nonEmptyIds.join(','))
+    const nonEmptyIds = ids.filter(Boolean).slice(0, MAX_MODEL_SELECTION)
+    setSelectedModelIdsRaw(nonEmptyIds.join(',') || null)
   }
 
   const filteredModels = useMemo(() => {
@@ -131,9 +148,9 @@ export function HomeClient({
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {sources.map((source) => {
-                const info = SOURCE_INFO[source.id]
-                if (!info) return null
-                const Icon = info.icon
+                const info = SOURCE_INFO[source.id as keyof typeof SOURCE_INFO]
+                const Icon = SOURCE_ICONS[source.id]
+                if (!info || !Icon) return null
                 return (
                   <Card key={source.id}>
                     <CardContent className="pt-4">
@@ -171,7 +188,7 @@ export function HomeClient({
               models={initialModels}
               selectedModelIds={selectedModelIds}
               onSelectionChange={handleSelectedModelsChange}
-              maxSelection={4}
+              maxSelection={MAX_MODEL_SELECTION}
             />
           </section>
 
@@ -179,10 +196,12 @@ export function HomeClient({
           {selectedData.length >= 1 && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Visual Comparison</h2>
-              <MetricsChart
-                models={selectedData.map((m) => m.model)}
-                scores={Object.fromEntries(selectedData.map((m) => [m.model.id, m.scores]))}
-              />
+              <GranularErrorBoundary name="Metrics Chart">
+                <MetricsChart
+                  models={selectedData.map((m) => m.model)}
+                  scores={Object.fromEntries(selectedData.map((m) => [m.model.id, m.scores]))}
+                />
+              </GranularErrorBoundary>
             </div>
           )}
 
@@ -196,7 +215,8 @@ export function HomeClient({
                 providers={providers}
                 architectures={architectures}
                 tags={tags}
-                onFilterChange={setFilters}
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
               />
             </CardContent>
           </Card>
@@ -218,7 +238,9 @@ export function HomeClient({
             <h2 className="text-2xl font-semibold mb-4">All Models</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredModels.map(({ model, scores }) => (
-                <ModelCard key={model.id} model={model} scores={scores} />
+                <GranularErrorBoundary key={model.id} name={model.name}>
+                  <ModelCard model={model} scores={scores} />
+                </GranularErrorBoundary>
               ))}
             </div>
           </div>
