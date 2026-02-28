@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { getAllModelsWithBenchmarks } from '@/lib/models'
 import { getChatbotArenaData } from '@/lib/hf-leaderboard'
 import { getArtificialAnalysisData } from '@/lib/artificialanalysis'
@@ -6,14 +7,26 @@ import { HomeClient } from '@/components/features/home-client'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
+// Cache the filter options computation for the request lifetime
+const getFilterOptions = cache(async () => {
   const modelsWithBenchmarks = await getAllModelsWithBenchmarks()
 
-  const uniqueProviders = [...new Set(modelsWithBenchmarks.map((m) => m.model.provider))]
-  const uniqueArchitectures = [...new Set(modelsWithBenchmarks.map((m) => m.model.architecture))]
-  const uniqueTags = [...new Set(modelsWithBenchmarks.flatMap((m) => m.model.tags))]
+  return {
+    modelsWithBenchmarks,
+    uniqueProviders: [...new Set(modelsWithBenchmarks.map((m) => m.model.provider))],
+    uniqueArchitectures: [...new Set(modelsWithBenchmarks.map((m) => m.model.architecture))],
+    uniqueTags: [...new Set(modelsWithBenchmarks.flatMap((m) => m.model.tags))],
+  }
+})
 
-  const [arenaData, aaData, lcsData] = await Promise.all([
+export default async function Home() {
+  const [
+    { modelsWithBenchmarks, uniqueProviders, uniqueArchitectures, uniqueTags },
+    arenaData,
+    aaData,
+    lcsData,
+  ] = await Promise.all([
+    getFilterOptions(),
     getChatbotArenaData(),
     getArtificialAnalysisData(),
     getLiveCodeSwebenchData(),
