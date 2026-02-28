@@ -1,4 +1,64 @@
-import { BenchmarkSource } from './benchmarks'
+import { BenchmarkSource, BenchmarkScores, Model } from './index'
+
+export interface HealthResponse {
+  status: 'healthy' | 'degraded'
+  timestamp: string
+  dataSources: {
+    chatbotArena: { status: 'ok' | 'error'; lastUpdated?: string; error?: string }
+    artificialAnalysis: { status: 'ok' | 'error'; lastUpdated?: string; error?: string }
+    liveCodeBench: { status: 'ok' | 'error'; lastUpdated?: string; error?: string }
+    swebench: { status: 'ok' | 'error'; lastUpdated?: string; error?: string }
+  }
+}
+
+export interface ModelsListResponse {
+  models: Array<{
+    model: Model
+    hasArenaScore: boolean
+    hasAAScore: boolean
+    hasLiveCodeScore: boolean
+    hasSWEScore: boolean
+  }>
+  total: number
+  filters: {
+    providers: string[]
+    architectures: string[]
+    tags: string[]
+  }
+}
+
+export interface ModelBenchmarksResponse {
+  model: Model
+  scores: BenchmarkScores
+  sources: BenchmarkSource[]
+}
+
+export interface CompareResponse {
+  models: Array<{
+    model: Model
+    scores: BenchmarkScores
+  }>
+  sources: BenchmarkSource[]
+  requestedModelIds: string[]
+  missingModelIds: string[]
+}
+
+export interface ErrorResponse {
+  error: string
+  message: string
+  statusCode: number
+}
+
+export interface RevalidateRequest {
+  secret: string
+  source: 'hf' | 'aa' | 'all'
+}
+
+export interface RevalidateResponse {
+  success: boolean
+  revalidated: string[]
+  message: string
+}
 
 export interface ArenaAPIResponse {
   arena: BenchmarkSource
