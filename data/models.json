@@ -1,0 +1,152 @@
+[
+  {
+    "id": "gpt-4o",
+    "name": "GPT-4o",
+    "provider": "OpenAI",
+    "architecture": "Multimodal",
+    "contextWindow": 128000,
+    "releaseDate": "2024-05-13",
+    "tags": ["multimodal", "flagship"],
+    "description": "OpenAI's flagship multimodal model"
+  },
+  {
+    "id": "gpt-4o-mini",
+    "name": "GPT-4o Mini",
+    "provider": "OpenAI",
+    "architecture": "Multimodal",
+    "contextWindow": 128000,
+    "releaseDate": "2024-07-18",
+    "tags": ["multimodal", "fast"],
+    "description": "Fast and affordable multimodal model"
+  },
+  {
+    "id": "gpt-4-turbo",
+    "name": "GPT-4 Turbo",
+    "provider": "OpenAI",
+    "architecture": "Text",
+    "contextWindow": 128000,
+    "releaseDate": "2023-11-06",
+    "tags": ["flagship", "legacy"],
+    "description": "Previous generation flagship model"
+  },
+  {
+    "id": "claude-3-5-sonnet",
+    "name": "Claude 3.5 Sonnet",
+    "provider": "Anthropic",
+    "architecture": "Text",
+    "contextWindow": 200000,
+    "releaseDate": "2024-06-20",
+    "tags": ["flagship", "balanced"],
+    "description": "Anthropic's flagship model with excellent reasoning"
+  },
+  {
+    "id": "claude-3-5-haiku",
+    "name": "Claude 3.5 Haiku",
+    "provider": "Anthropic",
+    "architecture": "Text",
+    "contextWindow": 200000,
+    "releaseDate": "2024-07-17",
+    "tags": ["fast", "affordable"],
+    "description": "Fast and affordable model from Anthropic"
+  },
+  {
+    "id": "claude-3-opus",
+    "name": "Claude 3 Opus",
+    "provider": "Anthropic",
+    "architecture": "Text",
+    "contextWindow": 200000,
+    "releaseDate": "2024-02-21",
+    "tags": ["flagship", "reasoning"],
+    "description": "Anthropic's most powerful model"
+  },
+  {
+    "id": "gemini-1.5-pro",
+    "name": "Gemini 1.5 Pro",
+    "provider": "Google",
+    "architecture": "Multimodal",
+    "contextWindow": 2000000,
+    "releaseDate": "2024-05-14",
+    "tags": ["multimodal", "long-context"],
+    "description": "Google's flagship multimodal with 2M context"
+  },
+  {
+    "id": "gemini-1.5-flash",
+    "name": "Gemini 1.5 Flash",
+    "provider": "Google",
+    "architecture": "Multimodal",
+    "contextWindow": 1000000,
+    "releaseDate": "2024-05-14",
+    "tags": ["multimodal", "fast"],
+    "description": "Fast and efficient multimodal model"
+  },
+  {
+    "id": "llama-3.1-405b",
+    "name": "Llama 3.1 405B",
+    "provider": "Meta",
+    "architecture": "Text",
+    "contextWindow": 128000,
+    "releaseDate": "2024-07-23",
+    "tags": ["open-weight", "flagship"],
+    "description": "Meta's largest open-weight model"
+  },
+  {
+    "id": "llama-3.1-70b",
+    "name": "Llama 3.1 70B",
+    "provider": "Meta",
+    "architecture": "Text",
+    "contextWindow": 128000,
+    "releaseDate": "2024-07-23",
+    "tags": ["open-weight", "balanced"],
+    "description": "Meta's balanced open-weight model"
+  },
+  {
+    "id": "mistral-large-2",
+    "name": "Mistral Large 2",
+    "provider": "Mistral",
+    "architecture": "Text",
+    "contextWindow": 128000,
+    "releaseDate": "2024-07-24",
+    "tags": ["flagship", "coding"],
+    "description": "Mistral's flagship model with strong coding"
+  },
+  {
+    "id": "deepseek-v3",
+    "name": "DeepSeek V3",
+    "provider": "DeepSeek",
+    "architecture": "Text",
+    "contextWindow": 64000,
+    "releaseDate": "2024-12-26",
+    "tags": ["open-weight", "flagship"],
+    "description": "DeepSeek's most powerful model"
+  },
+  {
+    "id": "deepseek-coder-v2",
+    "name": "DeepSeek Coder V2",
+    "provider": "DeepSeek",
+    "architecture": "Text",
+    "contextWindow": 64000,
+    "releaseDate": "2024-06-04",
+    "tags": ["coding", "open-weight"],
+    "description": "Specialized coding model"
+  },
+  {
+    "id": "grok-2",
+    "name": "Grok 2",
+    "provider": "xAI",
+    "architecture": "Text",
+    "contextWindow": 131072,
+    "releaseDate": "2024-08-13",
+    "tags": ["flagship", "real-time"],
+    "description": "xAI's flagship model"
+  },
+  {
+    "id": "claude-3-sonnet",
+    "name": "Claude 3 Sonnet",
+    "provider": "Anthropic",
+    "architecture": "Text",
+    "contextWindow": 200000,
+    "releaseDate": "2024-02-21",
+    "tags": ["balanced", "legacy"],
+    "description": "Anthropic's balanced model"
+  }
+]
