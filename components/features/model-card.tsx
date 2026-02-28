@@ -1,11 +1,11 @@
-import { Model, BenchmarkScores } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
-import { ScoreBadge } from "@/components/ui/score-badge";
-import { formatNumber } from "@/lib/utils";
+import { Model, BenchmarkScores } from '@/types'
+import { Card, CardContent, CardHeader, CardTitle, Badge } from '@/components/ui'
+import { ScoreBadge } from '@/components/ui/score-badge'
+import { formatNumber } from '@/lib/utils'
 
 interface ModelCardProps {
-  model: Model;
-  scores: BenchmarkScores;
+  model: Model
+  scores: BenchmarkScores
 }
 
 export function ModelCard({ model, scores }: ModelCardProps) {
@@ -31,11 +31,11 @@ export function ModelCard({ model, scores }: ModelCardProps) {
 
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div>
-            <span className="text-muted-foreground">Context:</span>{" "}
+            <span className="text-muted-foreground">Context:</span>{' '}
             <span className="font-medium">{formatNumber(model.contextWindow)}</span>
           </div>
           <div>
-            <span className="text-muted-foreground">Released:</span>{" "}
+            <span className="text-muted-foreground">Released:</span>{' '}
             <span className="font-medium">{model.releaseDate}</span>
           </div>
         </div>
@@ -64,5 +64,5 @@ export function ModelCard({ model, scores }: ModelCardProps) {
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-import { getAllModelsWithBenchmarks } from "@/lib/models";
-import { HomeClient } from "@/components/features/home-client";
+import { getAllModelsWithBenchmarks } from '@/lib/models'
+import { HomeClient } from '@/components/features/home-client'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const modelsWithBenchmarks = await getAllModelsWithBenchmarks();
+  const modelsWithBenchmarks = await getAllModelsWithBenchmarks()
 
-  const uniqueProviders = [...new Set(modelsWithBenchmarks.map((m) => m.model.provider))];
-  const uniqueArchitectures = [...new Set(modelsWithBenchmarks.map((m) => m.model.architecture))];
-  const uniqueTags = [...new Set(modelsWithBenchmarks.flatMap((m) => m.model.tags))];
+  const uniqueProviders = [...new Set(modelsWithBenchmarks.map((m) => m.model.provider))]
+  const uniqueArchitectures = [...new Set(modelsWithBenchmarks.map((m) => m.model.architecture))]
+  const uniqueTags = [...new Set(modelsWithBenchmarks.flatMap((m) => m.model.tags))]
 
   return (
     <HomeClient
@@ -17,5 +17,5 @@ export default async function Home() {
       architectures={uniqueArchitectures}
       tags={uniqueTags}
     />
-  );
+  )
 }

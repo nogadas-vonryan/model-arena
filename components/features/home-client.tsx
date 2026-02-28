@@ -1,52 +1,44 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import { Model, BenchmarkScores } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { ModelCard, FilterBar, ModelComparisonTable } from "@/components/features";
+import { useState, useMemo } from 'react'
+import { Model, BenchmarkScores } from '@/types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
+import { ModelCard, FilterBar, ModelComparisonTable } from '@/components/features'
 
 interface HomeClientProps {
-  initialModels: Array<{ model: Model; scores: BenchmarkScores }>;
-  providers: string[];
-  architectures: string[];
-  tags: string[];
+  initialModels: Array<{ model: Model; scores: BenchmarkScores }>
+  providers: string[]
+  architectures: string[]
+  tags: string[]
 }
 
-export function HomeClient({
-  initialModels,
-  providers,
-  architectures,
-  tags,
-}: HomeClientProps) {
+export function HomeClient({ initialModels, providers, architectures, tags }: HomeClientProps) {
   const [filters, setFilters] = useState({
-    search: "",
+    search: '',
     providers: [] as string[],
     architectures: [] as string[],
     tags: [] as string[],
-  });
+  })
 
   const filteredModels = useMemo(() => {
     return initialModels.filter(({ model }) => {
       const matchesSearch =
         !filters.search ||
         model.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        model.provider.toLowerCase().includes(filters.search.toLowerCase());
+        model.provider.toLowerCase().includes(filters.search.toLowerCase())
 
       const matchesProvider =
-        filters.providers.length === 0 ||
-        filters.providers.includes(model.provider);
+        filters.providers.length === 0 || filters.providers.includes(model.provider)
 
       const matchesArchitecture =
-        filters.architectures.length === 0 ||
-        filters.architectures.includes(model.architecture);
+        filters.architectures.length === 0 || filters.architectures.includes(model.architecture)
 
       const matchesTags =
-        filters.tags.length === 0 ||
-        filters.tags.some((t) => model.tags.includes(t));
+        filters.tags.length === 0 || filters.tags.some((t) => model.tags.includes(t))
 
-      return matchesSearch && matchesProvider && matchesArchitecture && matchesTags;
-    });
-  }, [initialModels, filters]);
+      return matchesSearch && matchesProvider && matchesArchitecture && matchesTags
+    })
+  }, [initialModels, filters])
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,5 +85,5 @@ export function HomeClient({
         </div>
       </main>
     </div>
-  );
+  )
 }

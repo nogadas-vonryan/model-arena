@@ -1,36 +1,34 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Model, BenchmarkScores } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from 'react'
+import { Model, BenchmarkScores } from '@/types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface ModelComparisonTableProps {
-  models: Array<{ model: Model; scores: BenchmarkScores }>;
+  models: Array<{ model: Model; scores: BenchmarkScores }>
 }
 
 export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
-  const [selectedModels, setSelectedModels] = useState<Set<string>>(new Set());
+  const [selectedModels, setSelectedModels] = useState<Set<string>>(new Set())
 
   const toggleModel = (modelId: string) => {
-    const newSelected = new Set(selectedModels);
+    const newSelected = new Set(selectedModels)
     if (newSelected.has(modelId)) {
-      newSelected.delete(modelId);
+      newSelected.delete(modelId)
     } else if (newSelected.size < 2) {
-      newSelected.add(modelId);
+      newSelected.add(modelId)
     }
-    setSelectedModels(newSelected);
-  };
+    setSelectedModels(newSelected)
+  }
 
-  const selectedData = models.filter((m) => selectedModels.has(m.model.id));
+  const selectedData = models.filter((m) => selectedModels.has(m.model.id))
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">
-          Select up to 2 models to compare:
-        </span>
+        <span className="text-sm text-muted-foreground">Select up to 2 models to compare:</span>
         <Badge variant="outline">{selectedModels.size}/2 selected</Badge>
       </div>
 
@@ -69,16 +67,14 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
               <tr
                 key={model.id}
                 className={`border-b hover:bg-muted/30 ${
-                  selectedModels.has(model.id) ? "bg-primary/10" : ""
+                  selectedModels.has(model.id) ? 'bg-primary/10' : ''
                 }`}
               >
                 <td className="p-3">
                   <Checkbox
                     checked={selectedModels.has(model.id)}
                     onCheckedChange={() => toggleModel(model.id)}
-                    disabled={
-                      !selectedModels.has(model.id) && selectedModels.size >= 2
-                    }
+                    disabled={!selectedModels.has(model.id) && selectedModels.size >= 2}
                   />
                 </td>
                 <td className="p-3 font-medium">{model.name}</td>
@@ -87,31 +83,25 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
                   {model.contextWindow.toLocaleString()}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.arena ? Math.round(scores.arena.overall) : "-"}
+                  {scores.arena ? Math.round(scores.arena.overall) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.arena ? Math.round(scores.arena.coding) : "-"}
+                  {scores.arena ? Math.round(scores.arena.coding) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.arena ? Math.round(scores.arena.math) : "-"}
+                  {scores.arena ? Math.round(scores.arena.math) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.liveCodeBench
-                    ? Math.round(scores.liveCodeBench.passAt1)
-                    : "-"}
+                  {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt1) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.liveCodeBench
-                    ? Math.round(scores.liveCodeBench.passAt5)
-                    : "-"}
+                  {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt5) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.liveCodeBench
-                    ? Math.round(scores.liveCodeBench.passAt10)
-                    : "-"}
+                  {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt10) : '-'}
                 </td>
                 <td className="p-3 text-center">
-                  {scores.swebench ? Math.round(scores.swebench.score) : "-"}
+                  {scores.swebench ? Math.round(scores.swebench.score) : '-'}
                 </td>
               </tr>
             ))}
@@ -132,19 +122,17 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Arena Overall:</span>
-                      <span>{scores.arena ? Math.round(scores.arena.overall) : "-"}</span>
+                      <span>{scores.arena ? Math.round(scores.arena.overall) : '-'}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">LiveCode Pass@1:</span>
                       <span>
-                        {scores.liveCodeBench
-                          ? Math.round(scores.liveCodeBench.passAt1)
-                          : "-"}
+                        {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt1) : '-'}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">SWE-bench:</span>
-                      <span>{scores.swebench ? Math.round(scores.swebench.score) : "-"}</span>
+                      <span>{scores.swebench ? Math.round(scores.swebench.score) : '-'}</span>
                     </div>
                   </div>
                 </div>
@@ -154,5 +142,5 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
         </Card>
       )}
     </div>
-  );
+  )
 }

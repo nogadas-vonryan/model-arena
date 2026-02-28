@@ -1,15 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { ScoreBadge } from "@/components/ui/score-badge";
-import { DataFreshnessTag } from "@/components/ui/data-freshness-tag";
-import { ArenaScore, LiveCodeBenchScore, SWEBenchScore, ArtificialAnalysisScore } from "@/types/benchmarks";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
+import { ScoreBadge } from '@/components/ui/score-badge'
+import { DataFreshnessTag } from '@/components/ui/data-freshness-tag'
+import {
+  ArenaScore,
+  LiveCodeBenchScore,
+  SWEBenchScore,
+  ArtificialAnalysisScore,
+} from '@/types/benchmarks'
 
 interface BenchmarkScoreCardProps {
-  title: string;
-  arena?: ArenaScore;
-  liveCodeBench?: LiveCodeBenchScore;
-  swebench?: SWEBenchScore;
-  artificialAnalysis?: ArtificialAnalysisScore;
-  lastUpdated: string;
+  title: string
+  arena?: ArenaScore
+  liveCodeBench?: LiveCodeBenchScore
+  swebench?: SWEBenchScore
+  artificialAnalysis?: ArtificialAnalysisScore
+  lastUpdated: string
 }
 
 export function BenchmarkScoreCard({
@@ -115,5 +120,5 @@ export function BenchmarkScoreCard({
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

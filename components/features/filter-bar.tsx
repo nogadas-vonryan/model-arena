@@ -1,32 +1,27 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 interface FilterBarProps {
-  providers: string[];
-  architectures: string[];
-  tags: string[];
+  providers: string[]
+  architectures: string[]
+  tags: string[]
   onFilterChange: (filters: {
-    search: string;
-    providers: string[];
-    architectures: string[];
-    tags: string[];
-  }) => void;
+    search: string
+    providers: string[]
+    architectures: string[]
+    tags: string[]
+  }) => void
 }
 
-export function FilterBar({
-  providers,
-  architectures,
-  tags,
-  onFilterChange,
-}: FilterBarProps) {
-  const [search, setSearch] = useState("");
-  const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
-  const [selectedArchitectures, setSelectedArchitectures] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+export function FilterBar({ providers, architectures, tags, onFilterChange }: FilterBarProps) {
+  const [search, setSearch] = useState('')
+  const [selectedProviders, setSelectedProviders] = useState<string[]>([])
+  const [selectedArchitectures, setSelectedArchitectures] = useState<string[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const toggleFilter = (
     value: string,
@@ -35,43 +30,38 @@ export function FilterBar({
   ) => {
     const newFilters = current.includes(value)
       ? current.filter((v) => v !== value)
-      : [...current, value];
-    setter(newFilters);
-    notifyChange(search, newFilters, selectedArchitectures, selectedTags);
-  };
+      : [...current, value]
+    setter(newFilters)
+    notifyChange(search, newFilters, selectedArchitectures, selectedTags)
+  }
 
-  const notifyChange = (
-    searchValue: string,
-    provs: string[],
-    archs: string[],
-    tgs: string[]
-  ) => {
+  const notifyChange = (searchValue: string, provs: string[], archs: string[], tgs: string[]) => {
     onFilterChange({
       search: searchValue,
       providers: provs,
       architectures: archs,
       tags: tgs,
-    });
-  };
+    })
+  }
 
   const clearFilters = () => {
-    setSearch("");
-    setSelectedProviders([]);
-    setSelectedArchitectures([]);
-    setSelectedTags([]);
+    setSearch('')
+    setSelectedProviders([])
+    setSelectedArchitectures([])
+    setSelectedTags([])
     onFilterChange({
-      search: "",
+      search: '',
       providers: [],
       architectures: [],
       tags: [],
-    });
-  };
+    })
+  }
 
   const hasFilters =
     search ||
     selectedProviders.length > 0 ||
     selectedArchitectures.length > 0 ||
-    selectedTags.length > 0;
+    selectedTags.length > 0
 
   return (
     <div className="space-y-4">
@@ -80,13 +70,8 @@ export function FilterBar({
           placeholder="Search models..."
           value={search}
           onChange={(e) => {
-            setSearch(e.target.value);
-            notifyChange(
-              e.target.value,
-              selectedProviders,
-              selectedArchitectures,
-              selectedTags
-            );
+            setSearch(e.target.value)
+            notifyChange(e.target.value, selectedProviders, selectedArchitectures, selectedTags)
           }}
           className="max-w-xs"
         />
@@ -103,7 +88,7 @@ export function FilterBar({
           {providers.map((provider) => (
             <Badge
               key={provider}
-              variant={selectedProviders.includes(provider) ? "default" : "outline"}
+              variant={selectedProviders.includes(provider) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
               onClick={() => toggleFilter(provider, selectedProviders, setSelectedProviders)}
             >
@@ -117,7 +102,7 @@ export function FilterBar({
           {architectures.map((arch) => (
             <Badge
               key={arch}
-              variant={selectedArchitectures.includes(arch) ? "default" : "outline"}
+              variant={selectedArchitectures.includes(arch) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
               onClick={() => toggleFilter(arch, selectedArchitectures, setSelectedArchitectures)}
             >
@@ -131,7 +116,7 @@ export function FilterBar({
           {tags.map((tag) => (
             <Badge
               key={tag}
-              variant={selectedTags.includes(tag) ? "default" : "outline"}
+              variant={selectedTags.includes(tag) ? 'default' : 'outline'}
               className="cursor-pointer mr-1"
               onClick={() => toggleFilter(tag, selectedTags, setSelectedTags)}
             >
@@ -141,5 +126,5 @@ export function FilterBar({
         </div>
       </div>
     </div>
-  );
+  )
 }
