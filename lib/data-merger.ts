@@ -37,11 +37,21 @@ export function getLiveCodeBenchScoresForModel(
 ): LiveCodeBenchScore | undefined {
   const normalizedModelId = modelId.toLowerCase()
 
-  const entry = data.liveCodeBench.find(
-    (e) =>
-      e.model.toLowerCase().includes(normalizedModelId) ||
-      normalizedModelId.includes(e.model.toLowerCase().split('-')[0])
-  )
+  // First try exact match
+  let entry = data.liveCodeBench.find((e) => e.model.toLowerCase() === normalizedModelId)
+
+  // Try partial match but ensure it's a proper prefix match
+  if (!entry) {
+    entry = data.liveCodeBench.find((e) => {
+      const entryModel = e.model.toLowerCase()
+      if (normalizedModelId.startsWith(entryModel)) return true
+      if (entryModel.startsWith(normalizedModelId)) {
+        const nextChar = entryModel[normalizedModelId.length]
+        if (!nextChar || nextChar === '-' || nextChar === '.') return true
+      }
+      return false
+    })
+  }
 
   if (!entry) return undefined
 
@@ -58,11 +68,21 @@ export function getSWEBenchScoresForModel(
 ): SWEBenchScore | undefined {
   const normalizedModelId = modelId.toLowerCase()
 
-  const entry = data.swebench.find(
-    (e) =>
-      e.model.toLowerCase().includes(normalizedModelId) ||
-      normalizedModelId.includes(e.model.toLowerCase().split('-')[0])
-  )
+  // First try exact match
+  let entry = data.swebench.find((e) => e.model.toLowerCase() === normalizedModelId)
+
+  // Try partial match but ensure it's a proper prefix match
+  if (!entry) {
+    entry = data.swebench.find((e) => {
+      const entryModel = e.model.toLowerCase()
+      if (normalizedModelId.startsWith(entryModel)) return true
+      if (entryModel.startsWith(normalizedModelId)) {
+        const nextChar = entryModel[normalizedModelId.length]
+        if (!nextChar || nextChar === '-' || nextChar === '.') return true
+      }
+      return false
+    })
+  }
 
   if (!entry) return undefined
 

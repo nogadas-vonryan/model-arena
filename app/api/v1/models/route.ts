@@ -17,7 +17,7 @@ export async function GET(
 
   const modelsWithBenchmarks = await getAllModelsWithBenchmarks()
 
-  const filtered = modelsWithBenchmarks.filter(({ model, scores }) => {
+  const filtered = modelsWithBenchmarks.filter(({ model, scores: _scores }) => {
     if (provider && model.provider !== provider) return false
     if (architecture && model.architecture !== architecture) return false
     if (tags) {

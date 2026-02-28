@@ -36,11 +36,30 @@ export function getArenaScoresForModel(
 ): ArenaScore | undefined {
   const normalizedModelId = modelId.toLowerCase()
 
-  const entry = data.data.find(
-    (e) =>
-      e.model.toLowerCase().includes(normalizedModelId) ||
-      normalizedModelId.includes(e.model.toLowerCase().split('-')[0])
-  )
+  // First try exact match
+  let entry = data.data.find((e) => e.model.toLowerCase() === normalizedModelId)
+
+  // Try matching by full model ID (e.g., "gpt-4o" matches "gpt-4o")
+  if (!entry) {
+    entry = data.data.find((e) => e.model.toLowerCase() === normalizedModelId)
+  }
+
+  // Try partial match but ensure it's a proper prefix match
+  // e.g., "gpt-4o" should match "gpt-4o" but not "gpt-5-2-chat"
+  if (!entry) {
+    entry = data.data.find((e) => {
+      const entryModel = e.model.toLowerCase()
+      // Check if model ID starts with the entry model name
+      if (normalizedModelId.startsWith(entryModel)) return true
+      // Check if entry model starts with the model ID (for shorter IDs)
+      if (entryModel.startsWith(normalizedModelId)) {
+        // Ensure the next char is a separator or end of string
+        const nextChar = entryModel[normalizedModelId.length]
+        if (!nextChar || nextChar === '-' || nextChar === '.') return true
+      }
+      return false
+    })
+  }
 
   if (!entry) return undefined
 

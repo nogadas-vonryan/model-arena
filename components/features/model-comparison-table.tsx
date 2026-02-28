@@ -1,35 +1,37 @@
 'use client'
 
-import { useState } from 'react'
 import { Model, BenchmarkScores } from '@/types'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 
 interface ModelComparisonTableProps {
   models: Array<{ model: Model; scores: BenchmarkScores }>
+  selectedModelIds: string[]
+  onSelectedModelsChange: (ids: string[]) => void
 }
 
-export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
-  const [selectedModels, setSelectedModels] = useState<Set<string>>(new Set())
-
+export function ModelComparisonTable({
+  models,
+  selectedModelIds,
+  onSelectedModelsChange,
+}: ModelComparisonTableProps) {
   const toggleModel = (modelId: string) => {
-    const newSelected = new Set(selectedModels)
-    if (newSelected.has(modelId)) {
-      newSelected.delete(modelId)
-    } else if (newSelected.size < 2) {
-      newSelected.add(modelId)
-    }
-    setSelectedModels(newSelected)
+    const newSelected = selectedModelIds.includes(modelId)
+      ? selectedModelIds.filter((id) => id !== modelId)
+      : selectedModelIds.length < 4
+        ? [...selectedModelIds, modelId]
+        : selectedModelIds
+
+    onSelectedModelsChange(newSelected)
   }
 
-  const selectedData = models.filter((m) => selectedModels.has(m.model.id))
+  const selectedData = models.filter((m) => selectedModelIds.includes(m.model.id))
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Select up to 2 models to compare:</span>
-        <Badge variant="outline">{selectedModels.size}/2 selected</Badge>
+        <span className="text-sm text-muted-foreground">Select up to 4 models to compare:</span>
+        <Badge variant="outline">{selectedModelIds.length}/4 selected</Badge>
       </div>
 
       <div className="overflow-x-auto">
@@ -67,14 +69,14 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
               <tr
                 key={model.id}
                 className={`border-b hover:bg-muted/30 ${
-                  selectedModels.has(model.id) ? 'bg-primary/10' : ''
+                  selectedModelIds.includes(model.id) ? 'bg-primary/10' : ''
                 }`}
               >
                 <td className="p-3">
                   <Checkbox
-                    checked={selectedModels.has(model.id)}
+                    checked={selectedModelIds.includes(model.id)}
                     onCheckedChange={() => toggleModel(model.id)}
-                    disabled={!selectedModels.has(model.id) && selectedModels.size >= 2}
+                    disabled={!selectedModelIds.includes(model.id) && selectedModelIds.length >= 4}
                   />
                 </td>
                 <td className="p-3 font-medium">{model.name}</td>
@@ -109,37 +111,60 @@ export function ModelComparisonTable({ models }: ModelComparisonTableProps) {
         </table>
       </div>
 
-      {selectedData.length === 2 && (
-        <Card className="mt-4 border-primary">
-          <CardHeader>
-            <CardTitle className="text-lg">Comparison</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-8">
-              {selectedData.map(({ model, scores }) => (
-                <div key={model.id}>
-                  <h4 className="font-medium mb-2">{model.name}</h4>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Arena Overall:</span>
-                      <span>{scores.arena ? Math.round(scores.arena.overall) : '-'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">LiveCode Pass@1:</span>
-                      <span>
-                        {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt1) : '-'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">SWE-bench:</span>
-                      <span>{scores.swebench ? Math.round(scores.swebench.score) : '-'}</span>
-                    </div>
+      {/* Selected Models Comparison */}
+      {selectedData.length >= 1 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-4">Selected Models ({selectedData.length})</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {selectedData.map(({ model, scores }) => (
+              <div
+                key={model.id}
+                className="rounded-lg border border-primary bg-primary/5 p-4 space-y-3"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold">{model.name}</h4>
+                    <p className="text-xs text-muted-foreground">{model.provider}</p>
+                  </div>
+                  <button
+                    onClick={() => toggleModel(model.id)}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={`Remove ${model.name}`}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Arena Overall:</span>
+                    <span className="font-medium">
+                      {scores.arena ? Math.round(scores.arena.overall) : '-'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Arena Coding:</span>
+                    <span className="font-medium">
+                      {scores.arena ? Math.round(scores.arena.coding) : '-'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">LiveCode Pass@1:</span>
+                    <span className="font-medium">
+                      {scores.liveCodeBench ? Math.round(scores.liveCodeBench.passAt1) : '-'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">SWE-bench:</span>
+                    <span className="font-medium">
+                      {scores.swebench ? Math.round(scores.swebench.score) : '-'}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
