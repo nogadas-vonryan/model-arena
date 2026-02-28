@@ -3,6 +3,7 @@ import { getModelWithBenchmarks } from '@/lib/models'
 import { getArenaSource } from '@/lib/hf-leaderboard'
 import { getAASource } from '@/lib/artificialanalysis'
 import { getLiveCodeSwebenchSource } from '@/lib/data-merger'
+import { isValidModelId } from '@/lib/utils'
 import type { ModelBenchmarksResponse, ErrorResponse } from '@/types/api'
 
 export const dynamic = 'force-dynamic'
@@ -13,6 +14,18 @@ export async function GET(
   { params }: { params: Promise<{ modelId: string }> }
 ): Promise<NextResponse<ModelBenchmarksResponse | ErrorResponse>> {
   const { modelId } = await params
+
+  // Validate model ID format
+  if (!isValidModelId(modelId)) {
+    return NextResponse.json(
+      {
+        error: 'Bad Request',
+        message: 'Invalid model ID format',
+        statusCode: 400,
+      },
+      { status: 400 }
+    )
+  }
 
   const result = await getModelWithBenchmarks(modelId)
 

@@ -38,20 +38,23 @@ export async function POST(
     }
 
     const revalidated: string[] = []
+    const pathsToRevalidate = new Set<string>()
+
+    // Always revalidate these paths for any source
+    pathsToRevalidate.add('/api/v1/models')
+    pathsToRevalidate.add('/api/v1/benchmarks')
+    pathsToRevalidate.add('/api/v1/compare')
 
     if (source === 'all' || source === 'hf') {
-      revalidatePath('/api/v1/models')
-      revalidatePath('/api/v1/benchmarks')
-      revalidatePath('/api/v1/compare')
       revalidated.push('hf-leaderboard')
     }
 
     if (source === 'all' || source === 'aa') {
-      revalidatePath('/api/v1/models')
-      revalidatePath('/api/v1/benchmarks')
-      revalidatePath('/api/v1/compare')
       revalidated.push('artificial-analysis')
     }
+
+    // Revalidate all collected paths once
+    pathsToRevalidate.forEach((path) => revalidatePath(path))
 
     revalidatePath('/api/v1/health')
     revalidated.push('health')

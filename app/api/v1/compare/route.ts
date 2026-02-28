@@ -3,6 +3,7 @@ import { getModelWithBenchmarks } from '@/lib/models'
 import { getArenaSource } from '@/lib/hf-leaderboard'
 import { getAASource } from '@/lib/artificialanalysis'
 import { getLiveCodeSwebenchSource } from '@/lib/data-merger'
+import { validateModelIds } from '@/lib/utils'
 import type { CompareResponse, ErrorResponse } from '@/types/api'
 
 export const dynamic = 'force-dynamic'
@@ -33,9 +34,37 @@ export async function GET(
     )
   }
 
-  const modelIds = modelIdsParam.split(',').map((id) => id.trim())
+  const modelIds = modelIdsParam
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean)
 
-  if (modelIds.length > 4) {
+  if (modelIds.length === 0) {
+    return NextResponse.json(
+      {
+        error: 'Bad Request',
+        message: 'modelIds query parameter cannot be empty',
+        statusCode: 400,
+      },
+      { status: 400 }
+    )
+  }
+
+  // Validate model IDs
+  const { valid: validModelIds, invalid: invalidModelIds } = validateModelIds(modelIds)
+
+  if (invalidModelIds.length > 0) {
+    return NextResponse.json(
+      {
+        error: 'Bad Request',
+        message: `Invalid model ID format: ${invalidModelIds.slice(0, 3).join(', ')}${invalidModelIds.length > 3 ? '...' : ''}`,
+        statusCode: 400,
+      },
+      { status: 400 }
+    )
+  }
+
+  if (validModelIds.length > 4) {
     return NextResponse.json(
       {
         error: 'Bad Request',
@@ -46,11 +75,11 @@ export async function GET(
     )
   }
 
-  const requestedModelIds = modelIds
+  const requestedModelIds = validModelIds
   const missingModelIds: string[] = []
 
   const modelsResult = await Promise.all(
-    modelIds.map(async (modelId) => {
+    validModelIds.map(async (modelId) => {
       const result = await getModelWithBenchmarks(modelId)
       if (!result) {
         missingModelIds.push(modelId)
