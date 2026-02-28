@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import liveCodeSwebenchData from '@/data/livecode-swebench.json'
 import { LiveCodeBenchScore, SWEBenchScore, BenchmarkSource } from '@/types/benchmarks'
+import { findEntryByModelId } from './utils'
 
 export interface LiveCodeBenchEntry {
   model: string
@@ -35,23 +36,7 @@ export function getLiveCodeBenchScoresForModel(
   modelId: string,
   data: LiveCodeSwebenchData
 ): LiveCodeBenchScore | undefined {
-  const normalizedModelId = modelId.toLowerCase()
-
-  // First try exact match
-  let entry = data.liveCodeBench.find((e) => e.model.toLowerCase() === normalizedModelId)
-
-  // Try partial match but ensure it's a proper prefix match
-  if (!entry) {
-    entry = data.liveCodeBench.find((e) => {
-      const entryModel = e.model.toLowerCase()
-      if (normalizedModelId.startsWith(entryModel)) return true
-      if (entryModel.startsWith(normalizedModelId)) {
-        const nextChar = entryModel[normalizedModelId.length]
-        if (!nextChar || nextChar === '-' || nextChar === '.') return true
-      }
-      return false
-    })
-  }
+  const entry = findEntryByModelId(modelId, data.liveCodeBench)
 
   if (!entry) return undefined
 
@@ -66,23 +51,7 @@ export function getSWEBenchScoresForModel(
   modelId: string,
   data: LiveCodeSwebenchData
 ): SWEBenchScore | undefined {
-  const normalizedModelId = modelId.toLowerCase()
-
-  // First try exact match
-  let entry = data.swebench.find((e) => e.model.toLowerCase() === normalizedModelId)
-
-  // Try partial match but ensure it's a proper prefix match
-  if (!entry) {
-    entry = data.swebench.find((e) => {
-      const entryModel = e.model.toLowerCase()
-      if (normalizedModelId.startsWith(entryModel)) return true
-      if (entryModel.startsWith(normalizedModelId)) {
-        const nextChar = entryModel[normalizedModelId.length]
-        if (!nextChar || nextChar === '-' || nextChar === '.') return true
-      }
-      return false
-    })
-  }
+  const entry = findEntryByModelId(modelId, data.swebench)
 
   if (!entry) return undefined
 
